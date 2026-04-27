@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Arduino IDE - oximeter.ino</title>
+<title>Arduino IDE</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
 
@@ -11,29 +12,29 @@
 
   :root {
     --bg-toolbar: #00878A;
-    --bg-sidebar: #1e1e1e;
-    --bg-editor: #1a1a1a;
-    --bg-panel: #252526;
-    --bg-tab: #2d2d2d;
-    --bg-tab-active: #1a1a1a;
-    --bg-line-num: #1a1a1a;
-    --border: #3a3a3a;
-    --text-primary: #d4d4d4;
-    --text-secondary: #858585;
-    --text-sidebar: #cccccc;
+    --bg-sidebar: #f5f5f7;
+    --bg-editor: #fff;
+    --bg-panel: #f0f0f0;
+    --bg-tab: #e0e0e0;
+    --bg-tab-active: #fff;
+    --bg-line-num: #f5f5f7;
+    --border: #d0d0d0;
+    --text-primary: #222;
+    --text-secondary: #888;
+    --text-sidebar: #444;
     --accent: #00878A;
-    --accent2: #e8a317;
+    --accent2: #4ee6e9;
 
-    --syn-keyword: #569cd6;
-    --syn-type: #4ec9b0;
-    --syn-function: #dcdcaa;
-    --syn-number: #b5cea8;
-    --syn-string: #ce9178;
-    --syn-comment: #6a9955;
-    --syn-operator: #d4d4d4;
-    --syn-punctuation: #d4d4d4;
-    --syn-constant: #9cdcfe;
-    --syn-builtin: #c586c0;
+    --syn-keyword: #005cc5;
+    --syn-type: #22863a;
+    --syn-function: #6f42c1;
+    --syn-number: #b31d28;
+    --syn-string: #032f62;
+    --syn-comment: #6a737d;
+    --syn-operator: #222;
+    --syn-punctuation: #222;
+    --syn-constant: #e36209;
+    --syn-builtin: #005cc5;
   }
 
   body {
@@ -68,9 +69,9 @@
     font-size: 18px;
   }
   .toolbar-btn:hover { opacity: 0.8; }
-  .btn-check { background: #fff; color: #00878A; }
-  .btn-upload { background: #e8a317; color: #fff; }
-  .btn-debug { background: #fff; color: #777; }
+  .btn-check { background: #90dede; color: #00878A; }
+  .btn-upload { background: #90dede; color: #00878A; }
+  .btn-debug { background: #90dede; color: #00878A; }
 
   .board-select {
     margin-left: 16px;
@@ -100,7 +101,7 @@
   /* SIDEBAR */
   .sidebar {
     width: 56px;
-    background: #252526;
+    background: var(--bg-sidebar);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
@@ -119,8 +120,8 @@
     transition: all 0.15s;
   }
   .sidebar-icon:hover, .sidebar-icon.active {
-    background: rgba(255,255,255,0.08);
-    color: #fff;
+    background: #e8a31722;
+    color: var(--accent);
   }
   .sidebar-icon.active { color: var(--accent); }
   .sidebar-bottom { margin-top: auto; }
@@ -128,12 +129,66 @@
   /* FILE PANEL */
   .file-panel {
     width: 200px;
-    background: #252526;
+    background: var(--bg-sidebar);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     overflow: hidden;
+    transition: width 0.3s ease, margin 0.3s ease;
+  }
+  .file-panel.collapsed {
+    width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    border-right: none;
+  }
+  .file-panel.collapsed > * {
+    display: none;
+  }
+  @media (max-width: 768px) {
+    .file-panel {
+      position: absolute;
+      top: 0;
+      left: 56px;
+      bottom: 0;
+      z-index: 100;
+      width: 200px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+    }
+    .file-panel.collapsed {
+      left: 0;
+    }
+    .editor-tab {
+      padding: 0 10px;
+      font-size: 11px;
+    }
+    .tab-menu {
+      display: none;
+    }
+    .board-select {
+      display: none;
+    }
+    .toolbar-right svg {
+      display: none;
+    }
+    .status-right span:not(:first-child) {
+      display: none;
+    }
+    .status-left span:first-child {
+      display: none;
+    }
+    .output-panel {
+      height: 60px;
+    }
+    .sidebar {
+      width: 48px;
+    }
+    .sidebar-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 18px;
+    }
   }
   .panel-header {
     padding: 10px 12px 8px;
@@ -178,9 +233,9 @@
   }
   .file-item:hover { background: rgba(255,255,255,0.05); }
   .file-item.active {
-    background: rgba(255,255,255,0.08);
+    background: #e8a31722;
     border-left-color: var(--accent);
-    color: #fff;
+    color: var(--accent);
   }
 
   /* EDITOR */
@@ -289,7 +344,7 @@
   /* OUTPUT PANEL */
   .output-panel {
     height: 80px;
-    background: #1e1e1e;
+    background: #f9f9f9;
     border-top: 1px solid var(--border);
     display: flex;
     flex-direction: column;
@@ -321,7 +376,7 @@
     display: flex; align-items: center;
     padding: 0 12px;
     font-size: 11px;
-    color: rgba(255,255,255,0.85);
+    color: #fff;
     gap: 16px;
     flex-shrink: 0;
   }
@@ -330,13 +385,13 @@
 
   /* Syntax colors */
   .kw  { color: #569cd6; }
-  .typ { color: #4ec9b0; }
-  .fn  { color: #dcdcaa; }
-  .num { color: #b5cea8; }
-  .str { color: #ce9178; }
-  .cmt { color: #6a9955; font-style: italic; }
-  .con { color: #9cdcfe; }
-  .mac { color: #c586c0; }
+  .typ { color: var(--syn-type); }
+  .fn  { color: var(--syn-function); }
+  .num { color: var(--syn-number); }
+  .str { color: var(--syn-string); }
+  .cmt { color: var(--syn-comment); font-style: italic; }
+  .con { color: var(--syn-constant); }
+  .mac { color: var(--syn-builtin); }
 
   /* Scrollbar */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -366,14 +421,14 @@
 
 <!-- TOOLBAR -->
 <div class="toolbar">
-  <button class="toolbar-btn btn-check" title="Verify">✓</button>
-  <button class="toolbar-btn btn-upload" title="Upload">→</button>
-  <button class="toolbar-btn btn-debug" title="Debugger">⊙</button>
+  <button class="toolbar-btn btn-check" title="Verify"><i class="fas fa-check"></i></button>
+  <button class="toolbar-btn btn-upload" title="Upload"><i class="fas fa-arrow-right"></i></button>
+  <button class="toolbar-btn btn-debug" title="Debugger"><i class="far fa-circle"></i></button>
 
   <div class="board-select">
-    <span>🔌</span>
+    <span><i class="fas fa-plug"></i></span>
     <span>ESP32 Dev Module</span>
-    <span>▾</span>
+    <span><i class="fas fa-caret-down"></i></span>
   </div>
 
   <div class="toolbar-right">
@@ -387,12 +442,12 @@
 
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <div class="sidebar-icon active" title="Files">📁</div>
-    <div class="sidebar-icon" title="Cloud">☁</div>
-    <div class="sidebar-icon" style="margin-top:8px" title="Libraries">📚</div>
-    <div class="sidebar-icon" title="Debug">🐛</div>
-    <div class="sidebar-icon" title="Search">🔍</div>
-    <div class="sidebar-icon sidebar-bottom" title="Account">👤</div>
+    <div class="sidebar-icon active" title="Files" id="folderToggle"><i class="fas fa-folder"></i></div>
+    <div class="sidebar-icon" title="Cloud"><i class="fas fa-cloud"></i></div>
+    <div class="sidebar-icon" style="margin-top:8px" title="Libraries"><i class="fas fa-book"></i></div>
+    <div class="sidebar-icon" title="Debug"><i class="fas fa-bug"></i></div>
+    <div class="sidebar-icon" title="Search"><i class="fas fa-magnifying-glass"></i></div>
+    <div class="sidebar-icon sidebar-bottom" title="Account"><i class="fas fa-user"></i></div>
   </div>
 
   <!-- FILE PANEL -->
@@ -400,26 +455,27 @@
     <div class="panel-header">
       Sketchbook
       <div style="display:flex;gap:8px;font-size:16px">
-        <span style="cursor:pointer;opacity:1">💻</span>
-        <span style="cursor:pointer;opacity:0.5">☁</span>
+        <span style="cursor:pointer;opacity:1"><i class="fas fa-laptop"></i></span>
+        <span style="cursor:pointer;opacity:0.5"><i class="fas fa-cloud"></i></span>
       </div>
     </div>
 
     <div style="flex:1;overflow-y:auto;padding-top:4px">
       <div class="file-item active">
-        <span>📄</span>
-        oximeter
+        <span><i class="fas fa-file"></i></span>
+        sketch_apr27.ino
       </div>
     </div>
 
     <button class="new-sketch-btn">+ New Sketch</button>
+  <button class="new-sketch-btn"><i class="fas fa-plus"></i> New Sketch</button>
   </div>
 
   <!-- EDITOR AREA -->
   <div class="editor-area">
 
     <div class="tab-bar">
-      <div class="editor-tab active">oximeter.ino</div>
+      <div class="editor-tab active">sketch_27apr.ino</div>
       <div class="tab-menu">···</div>
     </div>
 
@@ -435,8 +491,8 @@
       <div class="output-header">
         <span class="active">Output</span>
         <div class="output-actions">
-          <span title="Clear">⊟</span>
-          <span title="Toggle">⇕</span>
+          <span title="Clear"><i class="fas fa-minus-square"></i></span>
+          <span title="Toggle"><i class="fas fa-arrows-alt-v"></i></span>
         </div>
       </div>
       <div class="output-body" id="outputBody"></div>
@@ -448,52 +504,118 @@
 <!-- STATUS BAR -->
 <div class="status-bar">
   <div class="status-left">
-    <span>⟳ indexing: <span id="indexCount">0</span>/59</span>
+    <span><i class="fas fa-rotate"></i> indexing: <span id="indexCount">0</span>/59</span>
   </div>
   <div class="status-right">
     <span id="cursorPos">Ln 1, Col 1</span>
     <span>ESP32 Dev Module on /dev/cu.usbserial-0001</span>
     <span style="color:#e8a317">[not connected]</span>
-    <span>🔔</span>
-    <span>⊕</span>
+    <span><i class="fas fa-bell"></i></span>
+    <span><i class="fas fa-plus-circle"></i></span>
   </div>
 </div>
 
 <script>
-const defaultCode = `delay(2000); // pause at gantry
-move_forward();
-    }
+const defaultCode = `int leftIR = A3;
+int rightIR = A2;
+
+int trigPin = 13;
+int echoPin = 12;
+
+int in1 = 5;
+int in2 = 6;
+int in3 = 7;
+int in4 = 8;
+
+int threshold = 350;
+int stopDistance = 20;   // Stop if object closer than 15 cm
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+
+void loop() {
+
+  long duration;
+  int distance;
+
+  // Ultrasonic trigger
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2;
+
+  //  Stop if obstacle detected
+  if (distance > 0 && distance < stopDistance) {
+    stopMotors();
+    Serial.print("Obstacle detected at distance: ");
+    Serial.print(distance);
+    Serial.println(" cm");
+
+    delay(500); // small delay to avoid flooding serial monitor
+    return;
+  }
+
+  // Line follow logic
+  int leftValue = analogRead(leftIR);
+  int rightValue = analogRead(rightIR);
+
+  bool leftWhite = leftValue > threshold;
+  bool rightWhite = rightValue > threshold;
+
+  if (leftWhite && rightWhite) {
+    moveForward();
+  }
+  else if (leftWhite && !rightWhite) {
+    turnLeft();
+  }
+  else if (!leftWhite && rightWhite) {
+    turnRight();
+  }
+  else {
+    stopMotors();
   }
 }
 
-void readPulse() {
-  if (digitalRead(GANTRY_PIN) == HIGH) {
-    pulseStart = micros();
-  } else {
-    pulseWidth = micros() - pulseStart;
-    pulseReceived = true;
-  }
+void moveForward() {
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
 }
 
-int identifyGantry(unsigned long width) {
-  if (width < 1000) {
-    return 1;
-  } else if (width < 2000) {
-    return 2;
-  } else {
-    return 3;
-  }
+void turnLeft() {
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
 }
 
-void stop_buggy() {
-  analogWrite(MOTOR_L, 0);
-  analogWrite(MOTOR_R, 0);
+void turnRight() {
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
 }
 
-void move_forward() {
-  analogWrite(MOTOR_L, 150);
-  analogWrite(MOTOR_R, 150);
-}`;
+void stopMotors() {
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+}   `;
 
 const textarea = document.getElementById('codeInput');
 const display = document.getElementById('codeDisplay');
