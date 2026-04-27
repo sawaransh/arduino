@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arduino IDE - oximeter.ino</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-toolbar: #00878A;
+    --bg-sidebar: #1e1e1e;
+    --bg-editor: #1a1a1a;
+    --bg-panel: #252526;
+    --bg-tab: #2d2d2d;
+    --bg-tab-active: #1a1a1a;
+    --bg-line-num: #1a1a1a;
+    --border: #3a3a3a;
+    --text-primary: #d4d4d4;
+    --text-secondary: #858585;
+    --text-sidebar: #cccccc;
+    --accent: #00878A;
+    --accent2: #e8a317;
+
+    --syn-keyword: #569cd6;
+    --syn-type: #4ec9b0;
+    --syn-function: #dcdcaa;
+    --syn-number: #b5cea8;
+    --syn-string: #ce9178;
+    --syn-comment: #6a9955;
+    --syn-operator: #d4d4d4;
+    --syn-punctuation: #d4d4d4;
+    --syn-constant: #9cdcfe;
+    --syn-builtin: #c586c0;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-editor);
+    color: var(--text-primary);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-size: 13px;
+  }
+
+  /* TOOLBAR */
+  .toolbar {
+    background: var(--bg-toolbar);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    height: 48px;
+    gap: 8px;
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+  }
+  .toolbar-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    font-size: 18px;
+  }
+  .toolbar-btn:hover { opacity: 0.8; }
+  .btn-check { background: #fff; color: #00878A; }
+  .btn-upload { background: #e8a317; color: #fff; }
+  .btn-debug { background: #fff; color: #777; }
+
+  .board-select {
+    margin-left: 16px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .toolbar-right {
+    margin-left: auto;
+    display: flex; gap: 12px; align-items: center;
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 56px;
+    background: #252526;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .sidebar-icon {
+    width: 40px; height: 40px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 20px;
+    transition: all 0.15s;
+  }
+  .sidebar-icon:hover, .sidebar-icon.active {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+  }
+  .sidebar-icon.active { color: var(--accent); }
+  .sidebar-bottom { margin-top: auto; }
+
+  /* FILE PANEL */
+  .file-panel {
+    width: 200px;
+    background: #252526;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 10px 12px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    padding: 4px 8px 0;
+    gap: 4px;
+  }
+  .panel-tab {
+    padding: 5px 10px;
+    border-radius: 6px 6px 0 0;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    border: 1px solid transparent;
+    border-bottom: none;
+  }
+  .panel-tab.active {
+    color: var(--text-primary);
+    background: var(--bg-editor);
+    border-color: var(--border);
+  }
+  .file-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    color: var(--text-sidebar);
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all 0.1s;
+  }
+  .file-item:hover { background: rgba(255,255,255,0.05); }
+  .file-item.active {
+    background: rgba(255,255,255,0.08);
+    border-left-color: var(--accent);
+    color: #fff;
+  }
+
+  /* EDITOR */
+  .editor-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg-editor);
+  }
+
+  /* TAB BAR */
+  .tab-bar {
+    display: flex;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    align-items: stretch;
+    height: 36px;
+  }
+  .editor-tab {
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 16px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    border-right: 1px solid var(--border);
+    transition: all 0.1s;
+    white-space: nowrap;
+  }
+  .editor-tab.active {
+    background: var(--bg-editor);
+    color: var(--text-primary);
+    border-top: 2px solid var(--accent);
+  }
+  .tab-menu { margin-left: auto; padding: 0 12px; display: flex; align-items: center; color: var(--text-secondary); cursor: pointer; }
+
+  /* CODE EDITOR CONTAINER */
+  .code-container {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* LINE NUMBERS */
+  .line-numbers {
+    background: var(--bg-editor);
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 20.8px;
+    padding: 12px 12px 12px 16px;
+    text-align: right;
+    user-select: none;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+    min-width: 52px;
+    overflow: hidden;
+  }
+  .line-num { height: 20.8px; display: flex; align-items: center; justify-content: flex-end; }
+
+  /* CODE EDITOR */
+  .code-editor {
+    flex: 1;
+    position: relative;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow: hidden;
+  }
+
+  .code-display {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    padding: 12px 16px;
+    white-space: pre;
+    pointer-events: none;
+    overflow: hidden;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+
+  textarea.code-input {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    padding: 12px 16px;
+    background: transparent;
+    color: transparent;
+    caret-color: #aeafad;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre;
+    overflow: auto;
+    tab-size: 2;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+  }
+
+  /* OUTPUT PANEL */
+  .output-panel {
+    height: 80px;
+    background: #1e1e1e;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+  .output-header {
+    display: flex; align-items: center;
+    padding: 6px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-secondary);
+    gap: 12px;
+  }
+  .output-header span { cursor: pointer; }
+  .output-header span.active { color: var(--text-primary); border-bottom: 1px solid var(--accent); }
+  .output-actions { margin-left: auto; display: flex; gap: 10px; }
+  .output-body {
+    flex: 1; padding: 4px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-secondary);
+    overflow-y: auto;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    height: 24px;
+    background: var(--bg-toolbar);
+    display: flex; align-items: center;
+    padding: 0 12px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.85);
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .status-left { display: flex; gap: 16px; align-items: center; }
+  .status-right { margin-left: auto; display: flex; gap: 16px; align-items: center; }
+
+  /* Syntax colors */
+  .kw  { color: #569cd6; }
+  .typ { color: #4ec9b0; }
+  .fn  { color: #dcdcaa; }
+  .num { color: #b5cea8; }
+  .str { color: #ce9178; }
+  .cmt { color: #6a9955; font-style: italic; }
+  .con { color: #9cdcfe; }
+  .mac { color: #c586c0; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+  .new-sketch-btn {
+    margin: auto 12px 12px;
+    padding: 8px 16px;
+    border: 1.5px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    border-radius: 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+  .new-sketch-btn:hover { background: var(--accent); color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <button class="toolbar-btn btn-check" title="Verify">✓</button>
+  <button class="toolbar-btn btn-upload" title="Upload">→</button>
+  <button class="toolbar-btn btn-debug" title="Debugger">⊙</button>
+
+  <div class="board-select">
+    <span>🔌</span>
+    <span>ESP32 Dev Module</span>
+    <span>▾</span>
+  </div>
+
+  <div class="toolbar-right">
+    <svg width="20" height="20" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <svg width="20" height="20" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-icon active" title="Files">📁</div>
+    <div class="sidebar-icon" title="Cloud">☁</div>
+    <div class="sidebar-icon" style="margin-top:8px" title="Libraries">📚</div>
+    <div class="sidebar-icon" title="Debug">🐛</div>
+    <div class="sidebar-icon" title="Search">🔍</div>
+    <div class="sidebar-icon sidebar-bottom" title="Account">👤</div>
+  </div>
+
+  <!-- FILE PANEL -->
+  <div class="file-panel">
+    <div class="panel-header">
+      Sketchbook
+      <div style="display:flex;gap:8px;font-size:16px">
+        <span style="cursor:pointer;opacity:1">💻</span>
+        <span style="cursor:pointer;opacity:0.5">☁</span>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding-top:4px">
+      <div class="file-item active">
+        <span>📄</span>
+        oximeter
+      </div>
+    </div>
+
+    <button class="new-sketch-btn">+ New Sketch</button>
+  </div>
+
+  <!-- EDITOR AREA -->
+  <div class="editor-area">
+
+    <div class="tab-bar">
+      <div class="editor-tab active">oximeter.ino</div>
+      <div class="tab-menu">···</div>
+    </div>
+
+    <div class="code-container" id="codeContainer">
+      <div class="line-numbers" id="lineNumbers"></div>
+      <div class="code-editor">
+        <div class="code-display" id="codeDisplay" aria-hidden="true"></div>
+        <textarea class="code-input" id="codeInput" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+      </div>
+    </div>
+
+    <div class="output-panel">
+      <div class="output-header">
+        <span class="active">Output</span>
+        <div class="output-actions">
+          <span title="Clear">⊟</span>
+          <span title="Toggle">⇕</span>
+        </div>
+      </div>
+      <div class="output-body" id="outputBody"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-left">
+    <span>⟳ indexing: <span id="indexCount">0</span>/59</span>
+  </div>
+  <div class="status-right">
+    <span id="cursorPos">Ln 1, Col 1</span>
+    <span>ESP32 Dev Module on /dev/cu.usbserial-0001</span>
+    <span style="color:#e8a317">[not connected]</span>
+    <span>🔔</span>
+    <span>⊕</span>
+  </div>
+</div>
+
+<script>
+const defaultCode = `delay(2000); // pause at gantry
+move_forward();
+    }
+  }
+}
+
+void readPulse() {
+  if (digitalRead(GANTRY_PIN) == HIGH) {
+    pulseStart = micros();
+  } else {
+    pulseWidth = micros() - pulseStart;
+    pulseReceived = true;
+  }
+}
+
+int identifyGantry(unsigned long width) {
+  if (width < 1000) {
+    return 1;
+  } else if (width < 2000) {
+    return 2;
+  } else {
+    return 3;
+  }
+}
+
+void stop_buggy() {
+  analogWrite(MOTOR_L, 0);
+  analogWrite(MOTOR_R, 0);
+}
+
+void move_forward() {
+  analogWrite(MOTOR_L, 150);
+  analogWrite(MOTOR_R, 150);
+}`;
+
+const textarea = document.getElementById('codeInput');
+const display = document.getElementById('codeDisplay');
+const lineNumbers = document.getElementById('lineNumbers');
+const cursorPos = document.getElementById('cursorPos');
+const outputBody = document.getElementById('outputBody');
+
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function highlight(code) {
+  const lines = code.split('\n');
+  return lines.map(line => highlightLine(line)).join('\n');
+}
+
+function highlightLine(line) {
+  // Check if whole line is a comment
+  const trimmed = line.trimStart();
+  const leadingSpace = line.slice(0, line.length - trimmed.length);
+
+  // Single-line comment
+  const commentIdx = findCommentStart(line);
+
+  let codePart = commentIdx >= 0 ? line.slice(0, commentIdx) : line;
+  let commentPart = commentIdx >= 0 ? line.slice(commentIdx) : '';
+
+  let result = highlightCode(codePart);
+  if (commentPart) {
+    result += `<span class="cmt">${escapeHtml(commentPart)}</span>`;
+  }
+  return result;
+}
+
+function findCommentStart(line) {
+  let inStr = false, strChar = '';
+  for (let i = 0; i < line.length - 1; i++) {
+    const c = line[i];
+    if (inStr) {
+      if (c === '\\') { i++; continue; }
+      if (c === strChar) inStr = false;
+    } else {
+      if (c === '"' || c === "'") { inStr = true; strChar = c; continue; }
+      if (c === '/' && line[i+1] === '/') return i;
+    }
+  }
+  return -1;
+}
+
+function highlightCode(code) {
+  if (!code) return '';
+
+  const keywords = new Set(['void','int','long','unsigned','float','double','bool','char',
+    'byte','short','if','else','while','for','do','return','break','continue',
+    'switch','case','default','true','false','NULL','const','static','volatile',
+    'struct','class','new','delete','public','private','protected','String']);
+
+  const constants = new Set(['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN',
+    'MOTOR_L','MOTOR_R','GANTRY_PIN']);
+
+  const builtins = new Set(['digitalWrite','digitalRead','analogWrite','analogRead',
+    'pinMode','delay','millis','micros','Serial','attachInterrupt','detachInterrupt']);
+
+  // Tokenize
+  const tokenRegex = /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|#\w+|\b\w+\b|[^\w\s"'#]+|\s+/g;
+  let result = '';
+  let match;
+
+  while ((match = tokenRegex.exec(code)) !== null) {
+    const token = match[0];
+
+    if (token.startsWith('"') || token.startsWith("'")) {
+      result += `<span class="str">${escapeHtml(token)}</span>`;
+    } else if (token.startsWith('#')) {
+      result += `<span class="mac">${escapeHtml(token)}</span>`;
+    } else if (/^\d+\.?\d*$/.test(token)) {
+      result += `<span class="num">${token}</span>`;
+    } else if (keywords.has(token)) {
+      result += `<span class="kw">${token}</span>`;
+    } else if (constants.has(token)) {
+      result += `<span class="con">${token}</span>`;
+    } else if (builtins.has(token)) {
+      result += `<span class="fn">${token}</span>`;
+    } else if (/^[a-zA-Z_]\w*$/.test(token)) {
+      // Check if followed by ( — function call
+      const afterIdx = match.index + token.length;
+      const after = code.slice(afterIdx).trimStart();
+      if (after.startsWith('(')) {
+        result += `<span class="fn">${token}</span>`;
+      } else {
+        result += escapeHtml(token);
+      }
+    } else {
+      result += escapeHtml(token);
+    }
+  }
+
+  return result;
+}
+
+function updateDisplay() {
+  const code = textarea.value;
+  display.innerHTML = highlight(code) + '\n';
+  updateLineNumbers(code);
+}
+
+function updateLineNumbers(code) {
+  const count = code.split('\n').length;
+  let html = '';
+  for (let i = 1; i <= count; i++) {
+    html += `<div class="line-num">${i}</div>`;
+  }
+  lineNumbers.innerHTML = html;
+}
+
+function updateCursor() {
+  const val = textarea.value.substring(0, textarea.selectionStart);
+  const lines = val.split('\n');
+  cursorPos.textContent = `Ln ${lines.length}, Col ${lines[lines.length - 1].length + 1}`;
+}
+
+// Sync scroll
+textarea.addEventListener('scroll', () => {
+  display.scrollTop = textarea.scrollTop;
+  display.scrollLeft = textarea.scrollLeft;
+  lineNumbers.scrollTop = textarea.scrollTop;
+});
+
+textarea.addEventListener('input', updateDisplay);
+
+textarea.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const s = textarea.selectionStart, end = textarea.selectionEnd;
+    textarea.value = textarea.value.substring(0, s) + '  ' + textarea.value.substring(end);
+    textarea.selectionStart = textarea.selectionEnd = s + 2;
+    updateDisplay();
+  }
+});
+
+textarea.addEventListener('keyup', updateCursor);
+textarea.addEventListener('mouseup', updateCursor);
+textarea.addEventListener('click', updateCursor);
+
+// Init
+textarea.value = defaultCode;
+updateDisplay();
+
+// Animate index counter
+let idx = 0;
+const indexCount = document.getElementById('indexCount');
+const iv = setInterval(() => {
+  idx = Math.min(idx + 1, 59);
+  indexCount.textContent = idx;
+  if (idx >= 59) clearInterval(iv);
+}, 60);
+
+setTimeout(() => {
+  outputBody.innerHTML = '<span style="color:#6a9955">// Sketch loaded successfully.</span>';
+}, 500);
+</script>
+</body>
+</html>
