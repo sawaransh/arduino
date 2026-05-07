@@ -400,6 +400,8 @@
       <div class="file-item active">code_1.ino</div>
       <div class="file-item">code_2.ino</div>
       <div class="file-item">code_3.ino</div>
+      <div class="file-item">code_4.ino</div>
+      <div class="file-item">code_5.ino</div>
     </div>
 
     <button class="new-sketch-btn">+ New Sketch</button>
@@ -411,6 +413,8 @@
       <div class="editor-tab active" data-tab="0">code_1.ino</div>
       <div class="editor-tab" data-tab="1">code_2.ino</div>
       <div class="editor-tab" data-tab="2">code_3.ino</div>
+      <div class="editor-tab" data-tab="3">code_4.ino</div>
+      <div class="editor-tab" data-tab="4">code_5.ino</div>
       <div class="tab-menu">···</div>
     </div>
 
@@ -927,6 +931,398 @@ void stopMotors() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, LOW);
+}`,
+
+`// Pin definitions
+int t1 = A1;
+int t2 = A0;
+
+int pin5 = 5;
+int pin6 = 6;
+int pin7 = 7;
+int pin8 = 8;
+
+int irPin = A3;
+
+// State variables
+int gantryCounter = 0;
+bool obstacle = false;
+
+// Timing
+unsigned long lastGantryTime = 0;
+const int GANTRY_DELAY = 800;   // Stop duration at gantry
+
+// Stop state
+bool gantryStopActive = false;
+unsigned long gantryStopStart = 0;
+
+// Parking
+bool parkingTurned = false;
+int stopCounter = 0;
+
+unsigned long lastTurnTime = 0;
+const int RIGHT_TURN_TIME = 300;
+
+unsigned long lastParkTime = 0;
+const int PARK_DELAY = 500;
+
+// Mode
+enum Mode { LINE_FOLLOW, PARKING };
+Mode currentMode = LINE_FOLLOW;
+
+// ================= SETUP =================
+void setup()
+{
+    pinMode(pin5, OUTPUT);
+    pinMode(pin6, OUTPUT);
+    pinMode(pin7, OUTPUT);
+    pinMode(pin8, OUTPUT);
+
+    pinMode(t1, INPUT);
+    pinMode(t2, INPUT);
+    pinMode(irPin, INPUT);
+
+    Serial.begin(9600);
+}
+
+// ================= MOTOR =================
+void moveForward()
+{
+    digitalWrite(pin5, HIGH);
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, HIGH);
+}
+
+void turnLeft()
+{
+    digitalWrite(pin5, HIGH);
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, LOW);
+}
+
+void turnRight()
+{
+    digitalWrite(pin5, LOW);
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, HIGH);
+}
+
+void stopBuggy()
+{
+    digitalWrite(pin5, LOW);
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, LOW);
+}
+
+// ================= LINE FOLLOW =================
+void normalLineFollow()
+{
+    int r1 = digitalRead(t1);
+    int r2 = digitalRead(t2);
+
+    if (r1 == 1 && r2 == 1)
+        moveForward();
+    else if (r1 == 0 && r2 == 1)
+        turnLeft();
+    else if (r1 == 1 && r2 == 0)
+        turnRight();
+    else
+        turnLeft(); // recover
+}
+
+// ================= GANTRY =================
+void detectGantry()
+{
+    int sensor = digitalRead(irPin);
+
+    // Rising edge detect
+    if (sensor == HIGH && !obstacle)
+    {
+        gantryCounter++;
+        Serial.print(\"Gantry: \");
+        Serial.println(gantryCounter);
+
+        // Start stop
+        gantryStopActive = true;
+        gantryStopStart = millis();
+
+        obstacle = true;
+
+        if (gantryCounter >= 6)
+        {
+            currentMode = PARKING;
+            Serial.println(\"Switching to PARKING\");
+        }
+    }
+
+    if (sensor == LOW)
+    {
+        obstacle = false;
+    }
+}
+
+// ================= GANTRY STOP HANDLER =================
+bool handleGantryStop()
+{
+    if (gantryStopActive)
+    {
+        stopBuggy();
+
+        if (millis() - gantryStopStart >= GANTRY_DELAY)
+        {
+            gantryStopActive = false;
+        }
+        return true; // still stopping
+    }
+    return false;
+}
+
+// ================= PARKING =================
+void parkingMode()
+{
+    int r1 = digitalRead(t1);
+    int r2 = digitalRead(t2);
+
+    if (!parkingTurned)
+    {
+        if (millis() - lastTurnTime < RIGHT_TURN_TIME)
+        {
+            turnRight();
+            return;
+        }
+        else
+        {
+            parkingTurned = true;
+        }
+    }
+
+    normalLineFollow();
+
+    if (r1 == 0 && r2 == 0)
+    {
+        if (millis() - lastParkTime > PARK_DELAY)
+        {
+            stopCounter++;
+            lastParkTime = millis();
+
+            if (stopCounter >= 2)
+            {
+                stopBuggy();
+                Serial.println(\"Parked!\");
+                while (1);
+            }
+        }
+    }
+}
+
+// ================= LOOP =================
+void loop()
+{
+    if (handleGantryStop()) return;
+
+    if (currentMode == LINE_FOLLOW)
+    {
+        normalLineFollow();
+        detectGantry();
+    }
+    else
+    {
+        parkingMode();
+    }
+}`,
+
+`#include <NewPing.h>
+
+int TRIG = 13;
+int ECHO = 12;
+
+int t1 = A0;
+int t2 = A1;
+int irPin = A2;
+
+int pin5 = 5;
+int pin6 = 6;
+int pin7 = 7;
+int pin8 = 8;
+
+#define MAX_DISTANCE 200
+#define STOP_DISTANCE 15
+
+NewPing sonar(TRIG, ECHO, MAX_DISTANCE);
+
+int gantryCounter = 0;
+
+#define GANTRY_DELAY 600
+#define RIGHT_TURN_DELAY 350
+#define PARK_DELAY 10000
+
+void setup() {
+  pinMode(pin5, OUTPUT);
+  pinMode(pin6, OUTPUT);
+  pinMode(pin7, OUTPUT);
+  pinMode(pin8, OUTPUT);
+
+  pinMode(TRIG, OUTPUT);
+  pinMode(ECHO, INPUT);
+
+  pinMode(t1, INPUT);
+  pinMode(t2, INPUT);
+  pinMode(irPin, INPUT);
+}
+
+void loop() {
+
+  // OBSTACLE
+  if (detectObstacle()) {
+    stop();
+    return;
+  }
+
+  // PARKING TRIGGER
+  if (gantryCounter >= 7) {
+    parkingMode();
+    return;
+  }
+
+  lineFollow();
+  detectGantry();
+}
+
+// OBSTACLE
+bool detectObstacle() {
+
+  int distance = sonar.ping_cm();
+
+  if (distance > 0 && distance < STOP_DISTANCE) {
+    return true;
+  }
+
+  return false;
+}
+
+// LINE FOLLOW
+void lineFollow() {
+
+  int r1 = digitalRead(t1);
+  int r2 = digitalRead(t2);
+
+  if (r1 == 1 && r2 == 1)
+    forward();
+
+  else if (r1 == 0 && r2 == 0)
+    forward();
+
+  else if (r1 == 0 && r2 == 1)
+    left();
+
+  else if (r1 == 1 && r2 == 0)
+    right();
+}
+
+// GANTRY
+void detectGantry() {
+
+  if (digitalRead(irPin) == HIGH) {
+
+    unsigned long pulse = pulseIn(irPin, HIGH, 4000);
+
+    if (pulse > 500 && pulse <= 1500) {
+      gantryCounter++;
+    }
+
+    else if (pulse > 1500 && pulse <= 2500) {
+      gantryCounter++;
+    }
+
+    else if (pulse > 2500 && pulse <= 3500) {
+      gantryCounter++;
+    }
+
+    delay(GANTRY_DELAY);
+  }
+}
+
+// PARKING MODE
+void parkingMode() {
+
+  static bool turned = false;
+  static int stopCounter = 0;
+
+  int r1 = digitalRead(t1);
+  int r2 = digitalRead(t2);
+
+  // TURN RIGHT
+  if (!turned) {
+
+    lineFollow();
+
+    if (r2 == 0) {
+
+      right();
+      delay(RIGHT_TURN_DELAY);
+
+      turned = true;
+    }
+
+    return;
+  }
+
+  // PARKING LANE
+  if (r1 == 1 && r2 == 1)
+    forward();
+
+  else if (r1 == 0 && r2 == 1)
+    left();
+
+  else if (r1 == 1 && r2 == 0)
+    right();
+
+  else if (r1 == 0 && r2 == 0) {
+
+    stopCounter++;
+
+    if (stopCounter >= 2) {
+
+      stop();
+      delay(PARK_DELAY);
+    }
+  }
+}
+
+void forward() {
+
+  digitalWrite(pin5, HIGH);
+  digitalWrite(pin6, LOW);
+  digitalWrite(pin7, LOW);
+  digitalWrite(pin8, HIGH);
+}
+
+void left() {
+
+  digitalWrite(pin5, HIGH);
+  digitalWrite(pin6, LOW);
+  digitalWrite(pin7, LOW);
+  digitalWrite(pin8, LOW);
+}
+
+void right() {
+
+  digitalWrite(pin5, LOW);
+  digitalWrite(pin6, LOW);
+  digitalWrite(pin7, LOW);
+  digitalWrite(pin8, HIGH);
+}
+
+void stop() {
+
+  digitalWrite(pin5, LOW);
+  digitalWrite(pin6, LOW);
+  digitalWrite(pin7, LOW);
+  digitalWrite(pin8, LOW);
 }`
 ];
 
