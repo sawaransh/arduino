@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +49,6 @@
     font-size: 13px;
   }
 
-  /* TOOLBAR */
   .toolbar {
     background: var(--bg-toolbar);
     display: flex;
@@ -59,19 +59,28 @@
     flex-shrink: 0;
     border-bottom: 1px solid rgba(0,0,0,0.3);
   }
+
   .toolbar-btn {
-    width: 36px; height: 36px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     border: none;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: opacity 0.15s;
     font-size: 18px;
   }
+
   .toolbar-btn:hover { opacity: 0.8; }
-  .btn-check { background: #90dede; color: #00878A; }
-  .btn-upload { background: #90dede; color: #00878A; }
-  .btn-debug { background: #90dede; color: #00878A; }
+
+  .btn-check,
+  .btn-upload,
+  .btn-debug {
+    background: #90dede;
+    color: #00878A;
+  }
 
   .board-select {
     margin-left: 16px;
@@ -83,22 +92,24 @@
     font-size: 12px;
     font-family: 'Inter', sans-serif;
     cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .toolbar-right {
     margin-left: auto;
-    display: flex; gap: 12px; align-items: center;
+    display: flex;
+    gap: 12px;
+    align-items: center;
   }
 
-  /* MAIN LAYOUT */
   .main {
     display: flex;
     flex: 1;
     overflow: hidden;
   }
 
-  /* SIDEBAR */
   .sidebar {
     width: 56px;
     background: var(--bg-sidebar);
@@ -110,23 +121,28 @@
     gap: 4px;
     flex-shrink: 0;
   }
+
   .sidebar-icon {
-    width: 40px; height: 40px;
+    width: 40px;
+    height: 40px;
     border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     color: var(--text-secondary);
     font-size: 20px;
     transition: all 0.15s;
   }
-  .sidebar-icon:hover, .sidebar-icon.active {
+
+  .sidebar-icon:hover,
+  .sidebar-icon.active {
     background: #e8a31722;
     color: var(--accent);
   }
-  .sidebar-icon.active { color: var(--accent); }
+
   .sidebar-bottom { margin-top: auto; }
 
-  /* FILE PANEL */
   .file-panel {
     width: 200px;
     background: var(--bg-sidebar);
@@ -135,61 +151,8 @@
     flex-direction: column;
     flex-shrink: 0;
     overflow: hidden;
-    transition: width 0.3s ease, margin 0.3s ease;
   }
-  .file-panel.collapsed {
-    width: 0;
-    margin-left: 0;
-    overflow: hidden;
-    border-right: none;
-  }
-  .file-panel.collapsed > * {
-    display: none;
-  }
-  @media (max-width: 768px) {
-    .file-panel {
-      position: absolute;
-      top: 0;
-      left: 56px;
-      bottom: 0;
-      z-index: 100;
-      width: 200px;
-      box-shadow: 2px 0 8px rgba(0,0,0,0.2);
-    }
-    .file-panel.collapsed {
-      left: 0;
-    }
-    .editor-tab {
-      padding: 0 10px;
-      font-size: 11px;
-    }
-    .tab-menu {
-      display: none;
-    }
-    .board-select {
-      display: none;
-    }
-    .toolbar-right svg {
-      display: none;
-    }
-    .status-right span:not(:first-child) {
-      display: none;
-    }
-    .status-left span:first-child {
-      display: none;
-    }
-    .output-panel {
-      height: 60px;
-    }
-    .sidebar {
-      width: 48px;
-    }
-    .sidebar-icon {
-      width: 36px;
-      height: 36px;
-      font-size: 18px;
-    }
-  }
+
   .panel-header {
     padding: 10px 12px 8px;
     font-size: 11px;
@@ -202,43 +165,24 @@
     align-items: center;
     justify-content: space-between;
   }
-  .panel-tabs {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    padding: 4px 8px 0;
-    gap: 4px;
-  }
-  .panel-tab {
-    padding: 5px 10px;
-    border-radius: 6px 6px 0 0;
-    font-size: 12px;
-    cursor: pointer;
-    color: var(--text-secondary);
-    border: 1px solid transparent;
-    border-bottom: none;
-  }
-  .panel-tab.active {
-    color: var(--text-primary);
-    background: var(--bg-editor);
-    border-color: var(--border);
-  }
+
   .file-item {
-    display: flex; align-items: center; gap: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 8px 16px;
     cursor: pointer;
     color: var(--text-sidebar);
     font-size: 13px;
     border-left: 2px solid transparent;
-    transition: all 0.1s;
   }
-  .file-item:hover { background: rgba(255,255,255,0.05); }
+
   .file-item.active {
     background: #e8a31722;
     border-left-color: var(--accent);
     color: var(--accent);
   }
 
-  /* EDITOR */
   .editor-area {
     flex: 1;
     display: flex;
@@ -247,17 +191,17 @@
     background: var(--bg-editor);
   }
 
-  /* TAB BAR */
   .tab-bar {
     display: flex;
     background: var(--bg-panel);
     border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-    align-items: stretch;
     height: 36px;
   }
+
   .editor-tab {
-    display: flex; align-items: center; gap: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     padding: 0 16px;
     font-size: 12px;
     cursor: pointer;
@@ -266,14 +210,21 @@
     transition: all 0.1s;
     white-space: nowrap;
   }
+
   .editor-tab.active {
     background: var(--bg-editor);
     color: var(--text-primary);
     border-top: 2px solid var(--accent);
   }
-  .tab-menu { margin-left: auto; padding: 0 12px; display: flex; align-items: center; color: var(--text-secondary); cursor: pointer; }
 
-  /* CODE EDITOR CONTAINER */
+  .tab-menu {
+    margin-left: auto;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+  }
+
   .code-container {
     flex: 1;
     display: flex;
@@ -281,7 +232,6 @@
     position: relative;
   }
 
-  /* LINE NUMBERS */
   .line-numbers {
     background: var(--bg-editor);
     color: var(--text-secondary);
@@ -296,9 +246,14 @@
     min-width: 52px;
     overflow: hidden;
   }
-  .line-num { height: 20.8px; display: flex; align-items: center; justify-content: flex-end; }
 
-  /* CODE EDITOR */
+  .line-num {
+    height: 20.8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   .code-editor {
     flex: 1;
     position: relative;
@@ -309,7 +264,11 @@
   }
 
   .code-display {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     padding: 12px 16px;
     white-space: pre;
     pointer-events: none;
@@ -318,11 +277,14 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
     line-height: 1.6;
-    word-break: keep-all;
   }
 
   textarea.code-input {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     padding: 12px 16px;
     background: transparent;
     color: transparent;
@@ -341,7 +303,6 @@
     z-index: 2;
   }
 
-  /* OUTPUT PANEL */
   .output-panel {
     height: 80px;
     background: #f9f9f9;
@@ -350,54 +311,49 @@
     flex-direction: column;
     flex-shrink: 0;
   }
+
   .output-header {
-    display: flex; align-items: center;
+    display: flex;
+    align-items: center;
     padding: 6px 16px;
     border-bottom: 1px solid var(--border);
     font-size: 12px;
     color: var(--text-secondary);
     gap: 12px;
   }
-  .output-header span { cursor: pointer; }
-  .output-header span.active { color: var(--text-primary); border-bottom: 1px solid var(--accent); }
-  .output-actions { margin-left: auto; display: flex; gap: 10px; }
+
   .output-body {
-    flex: 1; padding: 4px 16px;
+    flex: 1;
+    padding: 4px 16px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     color: var(--text-secondary);
-    overflow-y: auto;
   }
 
-  /* STATUS BAR */
   .status-bar {
     height: 24px;
     background: var(--bg-toolbar);
-    display: flex; align-items: center;
+    display: flex;
+    align-items: center;
     padding: 0 12px;
     font-size: 11px;
     color: #fff;
     gap: 16px;
-    flex-shrink: 0;
   }
-  .status-left { display: flex; gap: 16px; align-items: center; }
-  .status-right { margin-left: auto; display: flex; gap: 16px; align-items: center; }
 
-  /* Syntax colors */
-  .kw  { color: #569cd6; }
-  .typ { color: var(--syn-type); }
-  .fn  { color: var(--syn-function); }
-  .num { color: var(--syn-number); }
-  .str { color: var(--syn-string); }
-  .cmt { color: var(--syn-comment); font-style: italic; }
-  .con { color: var(--syn-constant); }
-  .mac { color: var(--syn-builtin); }
+  .status-right {
+    margin-left: auto;
+    display: flex;
+    gap: 16px;
+  }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #555; }
+  .kw  { color: #00979c; }
+  .fn  { color: #d35400; }
+  .num { color: #8fae7a; }
+  .str { color: #8e44ad; }
+  .cmt { color: #95a5a6; font-style: italic; }
+  .con { color: #5e6d03; }
+  .mac { color: #7b1fa2; }
 
   .new-sketch-btn {
     margin: auto 12px 12px;
@@ -406,118 +362,474 @@
     background: transparent;
     color: var(--accent);
     border-radius: 20px;
-    font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: all 0.15s;
   }
-  .new-sketch-btn:hover { background: var(--accent); color: #fff; }
 </style>
 </head>
 <body>
 
-<!-- TOOLBAR -->
 <div class="toolbar">
-  <button class="toolbar-btn btn-check" title="Verify"><i class="fas fa-check"></i></button>
-  <button class="toolbar-btn btn-upload" title="Upload"><i class="fas fa-arrow-right"></i></button>
-  <button class="toolbar-btn btn-debug" title="Debugger"><i class="far fa-circle"></i></button>
+  <button class="toolbar-btn btn-check"><i class="fas fa-check"></i></button>
+  <button class="toolbar-btn btn-upload"><i class="fas fa-arrow-right"></i></button>
+  <button class="toolbar-btn btn-debug"><i class="far fa-circle"></i></button>
 
   <div class="board-select">
     <span><i class="fas fa-plug"></i></span>
     <span>ESP32 Dev Module</span>
     <span><i class="fas fa-caret-down"></i></span>
   </div>
-
-  <div class="toolbar-right">
-    <svg width="20" height="20" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    <svg width="20" height="20" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-  </div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
 
-  <!-- SIDEBAR -->
   <div class="sidebar">
-    <div class="sidebar-icon active" title="Files" id="folderToggle"><i class="fas fa-folder"></i></div>
-    <div class="sidebar-icon" title="Cloud"><i class="fas fa-cloud"></i></div>
-    <div class="sidebar-icon" style="margin-top:8px" title="Libraries"><i class="fas fa-book"></i></div>
-    <div class="sidebar-icon" title="Debug"><i class="fas fa-bug"></i></div>
-    <div class="sidebar-icon" title="Search"><i class="fas fa-magnifying-glass"></i></div>
-    <div class="sidebar-icon sidebar-bottom" title="Account"><i class="fas fa-user"></i></div>
+    <div class="sidebar-icon active"><i class="fas fa-folder"></i></div>
+    <div class="sidebar-icon"><i class="fas fa-cloud"></i></div>
+    <div class="sidebar-icon"><i class="fas fa-book"></i></div>
+    <div class="sidebar-icon"><i class="fas fa-bug"></i></div>
+    <div class="sidebar-icon"><i class="fas fa-magnifying-glass"></i></div>
+    <div class="sidebar-icon sidebar-bottom"><i class="fas fa-user"></i></div>
   </div>
 
-  <!-- FILE PANEL -->
   <div class="file-panel">
-    <div class="panel-header">
-      Sketchbook
-      <div style="display:flex;gap:8px;font-size:16px">
-        <span style="cursor:pointer;opacity:1"><i class="fas fa-laptop"></i></span>
-        <span style="cursor:pointer;opacity:0.5"><i class="fas fa-cloud"></i></span>
-      </div>
-    </div>
+    <div class="panel-header">Sketchbook</div>
 
     <div style="flex:1;overflow-y:auto;padding-top:4px">
-      <div class="file-item active">
-        <span><i class="fas fa-file"></i></span>
-        sketch_apr27.ino
-      </div>
+      <div class="file-item active">code_1.ino</div>
+      <div class="file-item">code_2.ino</div>
+      <div class="file-item">code_3.ino</div>
     </div>
 
     <button class="new-sketch-btn">+ New Sketch</button>
-  <button class="new-sketch-btn"><i class="fas fa-plus"></i> New Sketch</button>
   </div>
 
-  <!-- EDITOR AREA -->
   <div class="editor-area">
 
     <div class="tab-bar">
-      <div class="editor-tab active">sketch_27apr.ino</div>
+      <div class="editor-tab active" data-tab="0">code_1.ino</div>
+      <div class="editor-tab" data-tab="1">code_2.ino</div>
+      <div class="editor-tab" data-tab="2">code_3.ino</div>
       <div class="tab-menu">···</div>
     </div>
 
-    <div class="code-container" id="codeContainer">
+    <div class="code-container">
       <div class="line-numbers" id="lineNumbers"></div>
       <div class="code-editor">
-        <div class="code-display" id="codeDisplay" aria-hidden="true"></div>
-        <textarea class="code-input" id="codeInput" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+        <div class="code-display" id="codeDisplay"></div>
+        <textarea class="code-input" id="codeInput"></textarea>
       </div>
     </div>
 
     <div class="output-panel">
       <div class="output-header">
-        <span class="active">Output</span>
-        <div class="output-actions">
-          <span title="Clear"><i class="fas fa-minus-square"></i></span>
-          <span title="Toggle"><i class="fas fa-arrows-alt-v"></i></span>
-        </div>
+        <span>Output</span>
       </div>
-      <div class="output-body" id="outputBody"></div>
+      <div class="output-body">// Sketch loaded successfully.</div>
     </div>
-
   </div>
 </div>
 
-<!-- STATUS BAR -->
 <div class="status-bar">
-  <div class="status-left">
-    <span><i class="fas fa-rotate"></i> indexing: <span id="indexCount">0</span>/59</span>
-  </div>
+  <span id="cursorPos">Ln 1, Col 1</span>
   <div class="status-right">
-    <span id="cursorPos">Ln 1, Col 1</span>
-    <span>ESP32 Dev Module on /dev/cu.usbserial-0001</span>
-    <span style="color:#e8a317">[not connected]</span>
-    <span><i class="fas fa-bell"></i></span>
-    <span><i class="fas fa-plus-circle"></i></span>
+    <span>ESP32 Dev Module</span>
+    <span>[not connected]</span>
   </div>
 </div>
 
 <script>
-const defaultCode = `int leftIR = A3;
-int rightIR = A2;
+
+const codes = [
+`int t1 = A1;
+int t2 = A0;
+
+int pin5 = 5;
+int pin6 = 6;
+int pin7 = 7;
+int pin8 = 8;
+int irPin = A3;
+
+// ===== VARIABLES =====
+int gantryCounter = 0;
+bool started = false;
+bool obstacle = false;
+
+#define GANTRY 500
+#define RIGHT_TURN 300
+#define PARKING 500
+
+void setup()
+{
+    pinMode(pin5, OUTPUT);
+    pinMode(pin6, OUTPUT);
+    pinMode(pin7, OUTPUT);
+    pinMode(pin8, OUTPUT);
+
+    pinMode(t1, INPUT);
+    pinMode(t2, INPUT);
+    pinMode(irPin, INPUT);
+
+    Serial.begin(9600);
+
+    Serial.print("+++");
+    delay(1500);
+}
+
+void loop()
+{
+
+    // Parking condition
+    if (gantryCounter >= 6)
+    {
+        parkingMode();
+        return;
+    }
+
+    // Normal run
+    normalLineFollow();
+    detectGantry();
+}
+
+// ===== MOVEMENT =====
+void moveForward()
+{
+    digitalWrite(pin5, HIGH);
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, HIGH);
+}
+
+void turnLeft()
+{
+    digitalWrite(pin5, HIGH);
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, LOW);
+}
+
+void turnRight()
+{
+    digitalWrite(pin5, LOW);
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, HIGH);
+}
+
+void stopBuggy()
+{
+    digitalWrite(pin5, LOW);
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, LOW);
+}
+
+void normalLineFollow()
+{
+    int r1 = digitalRead(t1);
+    int r2 = digitalRead(t2);
+
+    if (r1 == 1 && r2 == 1){
+        moveForward();
+        delay(10);}
+    else if (r1 == 0 && r2 == 0){
+        moveForward();delay(10);}
+    else if (r1 == 0 && r2 == 1){
+        turnLeft();delay(10);}
+    else if (r1 == 1 && r2 == 0){
+        turnRight();delay(10);}
+}
+
+void detectGantry()
+{
+    if (digitalRead(irPin) == HIGH)
+    {
+        int d = pulseIn(irPin, HIGH, 3000);
+
+        if (d > 500 && d < 1500)
+        {
+            Serial.println("Gantry 1");
+            gantryCounter++;
+      
+        }
+        else if (d >= 1500 && d < 2500)
+        {
+            Serial.println("Gantry 2");
+            gantryCounter++;
+        }
+        else if (d >= 2500 && d < 3500)
+        {
+            Serial.println("Gantry 3");
+            gantryCounter++;
+        }
+
+        Serial.print("Count: ");
+        Serial.println(gantryCounter);
+
+        delay(GANTRY); // prevent double counting
+    }
+}
+
+// ===== PARKING MODE =====
+void parkingMode()
+{
+    static bool turned = false;
+    static int stopCounter = 0;
+
+    int r1 = digitalRead(t1);
+    int r2 = digitalRead(t2);
+
+    if (!turned)
+    {
+        normalLineFollow();
+
+        if (r1 == 0 && r2 == 0)
+        {
+            turnRight();
+            delay(RIGHT_TURN);
+            turned = true;
+        }
+        return;
+    }
+
+    // Step 2: inside parking lane
+    normalLineFollow();
+    if (r1 == 0 && r2 == 0)
+    {
+        if (stopCounter >= 1)
+        {
+            stopBuggy();
+        }
+        stopCounter++;
+        delay(PARKING);
+    }
+}`,
+
+`// ===== PIN DEFINITIONS =====
+int t1 = A1;   // Right IR sensor
+int t2 = A0;   // Left IR sensor
+
+int pin5 = 5;  // Left motor forward
+int pin6 = 6;  // Left motor backward
+int pin7 = 7;  // Right motor backward
+int pin8 = 8;  // Right motor forward
+
+int irPin = A3; // Gantry IR receiver input
+
+// ===== CONSTANTS =====
+#define GANTRY_DELAY   800   // ms to wait after detecting gantry (prevent double count)
+#define RIGHT_TURN     300   // ms for right turn into parking
+#define PARKING_DELAY  500   // ms delay after detecting parking stop line
+#define PULSE_TIMEOUT  5000  // microseconds - increased to catch Gantry 3 pulses (was 3000, too short)
+
+// ===== VARIABLES =====
+int  gantryCounter = 0;
+bool parkedPermanently = false;
+
+// ===== SETUP =====
+void setup()
+{
+    pinMode(pin5, OUTPUT);
+    pinMode(pin6, OUTPUT);
+    pinMode(pin7, OUTPUT);
+    pinMode(pin8, OUTPUT);
+
+    pinMode(t1,    INPUT);
+    pinMode(t2,    INPUT);
+    pinMode(irPin, INPUT);
+
+    Serial.begin(9600);
+    // Removed Serial.print(\"+++\") — that was an HC-05 Bluetooth AT command
+    // Only add it back if you are using a Bluetooth module
+}
+
+// ===== MAIN LOOP =====
+void loop()
+{
+    // If buggy is permanently parked, do nothing forever
+    if (parkedPermanently)
+    {
+        stopBuggy();
+        return;
+    }
+
+    // After 6 gantries, enter parking mode
+    if (gantryCounter >= 6)
+    {
+        parkingMode();
+        return;
+    }
+
+    // Normal operation: follow line + watch for gantries
+    normalLineFollow();
+    detectGantry();
+}
+
+// ===== MOVEMENT FUNCTIONS =====
+
+void moveForward()
+{
+    digitalWrite(pin5, HIGH);
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, HIGH);
+}
+
+void turnLeft()
+{
+    digitalWrite(pin5, HIGH);  // Left motor ON
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, LOW);   // Right motor OFF
+}
+
+void turnRight()
+{
+    digitalWrite(pin5, LOW);   // Left motor OFF
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, HIGH);  // Right motor ON
+}
+
+void stopBuggy()
+{
+    digitalWrite(pin5, LOW);
+    digitalWrite(pin6, LOW);
+    digitalWrite(pin7, LOW);
+    digitalWrite(pin8, LOW);
+}
+
+// ===== LINE FOLLOWING =====
+/*
+   Sensor reads:
+   t1=1, t2=1 → both on WHITE  → move forward
+   t1=0, t2=0 → both on BLACK  → move forward (crossing line / junction)
+   t1=0, t2=1 → left on BLACK  → turn left to correct
+   t1=1, t2=0 → right on BLACK → turn right to correct
+*/
+void normalLineFollow()
+{
+    int r1 = digitalRead(t1);
+    int r2 = digitalRead(t2);
+
+    if      (r1 == 1 && r2 == 1) { moveForward(); delay(10); }
+    else if (r1 == 0 && r2 == 0) { moveForward(); delay(10); }
+    else if (r1 == 0 && r2 == 1) { turnLeft();    delay(10); }
+    else if (r1 == 1 && r2 == 0) { turnRight();   delay(10); }
+}
+
+// ===== GANTRY DETECTION =====
+/*
+   Pulse width ranges identify each gantry:
+   500  - 1499 µs → Gantry 1
+   1500 - 2499 µs → Gantry 2
+   2500 - 3499 µs → Gantry 3
+
+   FIX: pulseIn timeout raised to 5000µs so Gantry 3 pulses
+   (up to 3499µs) are never cut off early.
+*/
+void detectGantry()
+{
+    // Only try to read pulse if a signal is actively present
+    if (digitalRead(irPin) == HIGH)
+    {
+        long d = pulseIn(irPin, HIGH, PULSE_TIMEOUT); // FIX: was 3000, now 5000
+
+        if (d == 0)
+        {
+            // pulseIn timed out — no valid pulse received
+            return;
+        }
+
+        if (d >= 500 && d < 1500)
+        {
+            Serial.println(\"Gantry 1 detected\");
+            gantryCounter++;
+        }
+        else if (d >= 1500 && d < 2500)
+        {
+            Serial.println(\"Gantry 2 detected\");
+            gantryCounter++;
+        }
+        else if (d >= 2500 && d < 3500)
+        {
+            Serial.println(\"Gantry 3 detected\");
+            gantryCounter++;
+        }
+        else
+        {
+            // Pulse received but doesn't match any gantry range — ignore
+            Serial.println(\"Unknown pulse width, ignoring\");
+            return;
+        }
+
+        Serial.print(\"Gantry Count: \");
+        Serial.println(gantryCounter);
+
+        delay(GANTRY_DELAY); // Prevent same gantry being counted twice
+    }
+}
+
+// ===== PARKING MODE =====
+/*
+   Step 1: Follow line normally until BOTH sensors hit black (junction marker)
+           Then turn RIGHT into the parking lane.
+
+   Step 2: Follow the parking lane line.
+           When BOTH sensors hit black again (end of parking lane),
+           stop PERMANENTLY.
+
+   FIX: Original code called stopBuggy() but then loop() restarted the motors.
+        Now we set parkedPermanently = true so the buggy never moves again.
+*/
+void parkingMode()
+{
+    static bool turned      = false;
+    static int  stopCounter = 0;
+
+    int r1 = digitalRead(t1);
+    int r2 = digitalRead(t2);
+
+    // --- STEP 1: Reach parking junction and turn right ---
+    if (!turned)
+    {
+        normalLineFollow();
+
+        // Both sensors on black = junction/T-intersection found
+        if (r1 == 0 && r2 == 0)
+        {
+            stopBuggy();
+            delay(100);          // Brief pause before turning
+            turnRight();
+            delay(RIGHT_TURN);   // Turn for fixed duration to enter parking lane
+            turned = true;
+        }
+        return;
+    }
+
+    // --- STEP 2: Navigate inside parking lane ---
+    normalLineFollow();
+
+    // Both sensors on black = end of parking lane (stop marker)
+    if (r1 == 0 && r2 == 0)
+    {
+        stopCounter++;
+        delay(PARKING_DELAY);
+
+        if (stopCounter >= 1)
+        {
+            // FIX: Set flag so loop() permanently halts the buggy
+            // Original bug: stopBuggy() was called but loop() restarted motors after
+            stopBuggy();
+            parkedPermanently = true;
+            Serial.println(\"Buggy parked successfully.\");
+        }
+    }
+}`,
+
+`int leftIR = A0;
+int rightIR = A1;
 
 int trigPin = 13;
 int echoPin = 12;
@@ -528,7 +840,7 @@ int in3 = 7;
 int in4 = 8;
 
 int threshold = 350;
-int stopDistance = 20;   // Stop if object closer than 15 cm
+int stopDistance = 25;   // Stop if object closer than 15 cm
 
 void setup() {
   Serial.begin(9600);
@@ -560,9 +872,9 @@ void loop() {
   //  Stop if obstacle detected
   if (distance > 0 && distance < stopDistance) {
     stopMotors();
-    Serial.print("Obstacle detected at distance: ");
+    Serial.print(\"Obstacle detected at distance: \");
     Serial.print(distance);
-    Serial.println(" cm");
+    Serial.println(\" cm\");
 
     delay(500); // small delay to avoid flooding serial monitor
     return;
@@ -615,13 +927,16 @@ void stopMotors() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, LOW);
-}   `;
+}`
+];
+
+let currentTab = 0;
 
 const textarea = document.getElementById('codeInput');
 const display = document.getElementById('codeDisplay');
 const lineNumbers = document.getElementById('lineNumbers');
 const cursorPos = document.getElementById('cursorPos');
-const outputBody = document.getElementById('outputBody');
+const tabs = document.querySelectorAll('.editor-tab');
 
 function escapeHtml(text) {
   return text
@@ -631,154 +946,146 @@ function escapeHtml(text) {
 }
 
 function highlight(code) {
+
+  const keywords = new Set([
+    'void','int','long','unsigned','float','double','bool','char',
+    'byte','short','if','else','while','for','do','return',
+    'break','continue','switch','case','default','true','false',
+    'NULL','const','static','volatile'
+  ]);
+
+  const constants = new Set([
+    'HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP'
+  ]);
+
+  const builtins = new Set([
+    'digitalWrite','digitalRead','analogWrite','analogRead',
+    'pinMode','delay','delayMicroseconds',
+    'millis','micros','pulseIn',
+    'Serial','begin','print','println'
+  ]);
+
+  function escapeHtml(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  const tokenRegex =
+    /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|#\w+|\b\w+\b|[^\w\s"'#]+|\s+/g;
+
   const lines = code.split('\n');
-  return lines.map(line => highlightLine(line)).join('\n');
-}
 
-function highlightLine(line) {
-  // Check if whole line is a comment
-  const trimmed = line.trimStart();
-  const leadingSpace = line.slice(0, line.length - trimmed.length);
+  return lines.map(line => {
 
-  // Single-line comment
-  const commentIdx = findCommentStart(line);
+    let result = '';
+    let match;
 
-  let codePart = commentIdx >= 0 ? line.slice(0, commentIdx) : line;
-  let commentPart = commentIdx >= 0 ? line.slice(commentIdx) : '';
+    while ((match = tokenRegex.exec(line)) !== null) {
 
-  let result = highlightCode(codePart);
-  if (commentPart) {
-    result += `<span class="cmt">${escapeHtml(commentPart)}</span>`;
-  }
-  return result;
-}
+      const token = match[0];
 
-function findCommentStart(line) {
-  let inStr = false, strChar = '';
-  for (let i = 0; i < line.length - 1; i++) {
-    const c = line[i];
-    if (inStr) {
-      if (c === '\\') { i++; continue; }
-      if (c === strChar) inStr = false;
-    } else {
-      if (c === '"' || c === "'") { inStr = true; strChar = c; continue; }
-      if (c === '/' && line[i+1] === '/') return i;
-    }
-  }
-  return -1;
-}
+      if (token.startsWith('//')) {
+        result += `<span class="cmt">${escapeHtml(token)}</span>`;
+      }
 
-function highlightCode(code) {
-  if (!code) return '';
+      else if (token.startsWith('"') || token.startsWith("'")) {
+        result += `<span class="str">${escapeHtml(token)}</span>`;
+      }
 
-  const keywords = new Set(['void','int','long','unsigned','float','double','bool','char',
-    'byte','short','if','else','while','for','do','return','break','continue',
-    'switch','case','default','true','false','NULL','const','static','volatile',
-    'struct','class','new','delete','public','private','protected','String']);
+      else if (token.startsWith('#')) {
+        result += `<span class="mac">${escapeHtml(token)}</span>`;
+      }
 
-  const constants = new Set(['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN',
-    'MOTOR_L','MOTOR_R','GANTRY_PIN']);
+      else if (/^\d+\.?\d*$/.test(token)) {
+        result += `<span class="num">${token}</span>`;
+      }
 
-  const builtins = new Set(['digitalWrite','digitalRead','analogWrite','analogRead',
-    'pinMode','delay','millis','micros','Serial','attachInterrupt','detachInterrupt']);
+      else if (keywords.has(token)) {
+        result += `<span class="kw">${token}</span>`;
+      }
 
-  // Tokenize
-  const tokenRegex = /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|#\w+|\b\w+\b|[^\w\s"'#]+|\s+/g;
-  let result = '';
-  let match;
+      else if (constants.has(token)) {
+        result += `<span class="con">${token}</span>`;
+      }
 
-  while ((match = tokenRegex.exec(code)) !== null) {
-    const token = match[0];
-
-    if (token.startsWith('"') || token.startsWith("'")) {
-      result += `<span class="str">${escapeHtml(token)}</span>`;
-    } else if (token.startsWith('#')) {
-      result += `<span class="mac">${escapeHtml(token)}</span>`;
-    } else if (/^\d+\.?\d*$/.test(token)) {
-      result += `<span class="num">${token}</span>`;
-    } else if (keywords.has(token)) {
-      result += `<span class="kw">${token}</span>`;
-    } else if (constants.has(token)) {
-      result += `<span class="con">${token}</span>`;
-    } else if (builtins.has(token)) {
-      result += `<span class="fn">${token}</span>`;
-    } else if (/^[a-zA-Z_]\w*$/.test(token)) {
-      // Check if followed by ( — function call
-      const afterIdx = match.index + token.length;
-      const after = code.slice(afterIdx).trimStart();
-      if (after.startsWith('(')) {
+      else if (builtins.has(token)) {
         result += `<span class="fn">${token}</span>`;
-      } else {
+      }
+
+      else {
         result += escapeHtml(token);
       }
-    } else {
-      result += escapeHtml(token);
     }
-  }
 
-  return result;
+    return result;
+
+  }).join('\n');
 }
 
 function updateDisplay() {
   const code = textarea.value;
-  display.innerHTML = highlight(code) + '\n';
-  updateLineNumbers(code);
-}
+  display.innerHTML = highlight(code);
 
-function updateLineNumbers(code) {
-  const count = code.split('\n').length;
+  const lines = code.split('\n').length;
   let html = '';
-  for (let i = 1; i <= count; i++) {
+
+  for (let i = 1; i <= lines; i++) {
     html += `<div class="line-num">${i}</div>`;
   }
+
   lineNumbers.innerHTML = html;
 }
 
-function updateCursor() {
-  const val = textarea.value.substring(0, textarea.selectionStart);
-  const lines = val.split('\n');
-  cursorPos.textContent = `Ln ${lines.length}, Col ${lines[lines.length - 1].length + 1}`;
+function loadTab(index) {
+  currentTab = index;
+  textarea.value = codes[index];
+
+  tabs.forEach(tab => tab.classList.remove('active'));
+  tabs[index].classList.add('active');
+
+  updateDisplay();
 }
 
-// Sync scroll
+textarea.addEventListener('input', () => {
+  codes[currentTab] = textarea.value;
+  updateDisplay();
+});
+
 textarea.addEventListener('scroll', () => {
   display.scrollTop = textarea.scrollTop;
   display.scrollLeft = textarea.scrollLeft;
   lineNumbers.scrollTop = textarea.scrollTop;
 });
 
-textarea.addEventListener('input', updateDisplay);
+textarea.addEventListener('keyup', () => {
+  const val = textarea.value.substring(0, textarea.selectionStart);
+  const lines = val.split('\n');
+  cursorPos.textContent = `Ln ${lines.length}, Col ${lines[lines.length - 1].length + 1}`;
+});
 
 textarea.addEventListener('keydown', (e) => {
   if (e.key === 'Tab') {
     e.preventDefault();
-    const s = textarea.selectionStart, end = textarea.selectionEnd;
-    textarea.value = textarea.value.substring(0, s) + '  ' + textarea.value.substring(end);
-    textarea.selectionStart = textarea.selectionEnd = s + 2;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+
+    textarea.value = textarea.value.substring(0, start) + '  ' + textarea.value.substring(end);
+
+    textarea.selectionStart = textarea.selectionEnd = start + 2;
+
+    codes[currentTab] = textarea.value;
     updateDisplay();
   }
 });
 
-textarea.addEventListener('keyup', updateCursor);
-textarea.addEventListener('mouseup', updateCursor);
-textarea.addEventListener('click', updateCursor);
+tabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => loadTab(index));
+});
 
-// Init
-textarea.value = defaultCode;
-updateDisplay();
-
-// Animate index counter
-let idx = 0;
-const indexCount = document.getElementById('indexCount');
-const iv = setInterval(() => {
-  idx = Math.min(idx + 1, 59);
-  indexCount.textContent = idx;
-  if (idx >= 59) clearInterval(iv);
-}, 60);
-
-setTimeout(() => {
-  outputBody.innerHTML = '<span style="color:#6a9955">// Sketch loaded successfully.</span>';
-}, 500);
+loadTab(0);
 </script>
 </body>
 </html>
+
